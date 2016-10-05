@@ -1,0 +1,11 @@
+<header>
+  <img width="99px" src="http://d39kbiy71leyho.cloudfront.net/wp-content/uploads/2016/05/09170020/cats-politics-TN.jpg" />
+  <h1>99 Cats</h1>
+  <nav>
+    <% if current_user %>
+      <%= button_to "Logout", session_url, method: :delete %>
+    <% else %>
+      <%= button_to "Login", new_session_url, method: :get %>
+    <% end %>
+  </nav>
+</header>
