@@ -1,4 +1,18 @@
 class User < ActiveRecord::Base
+  has_many :cats,
+    primary_key: :id,
+    foreign_key: :user_id,
+    class_name: :Cat
+
+  has_many :cat_rental_requests,
+    primary_key: :id,
+    foreign_key: :user_id,
+    class_name: :CatRentalRequest
+
+  # has_many :rented_cats,
+  #   through: :approved_requests,
+  #   source: :cat
+
   after_initialize :ensure_session_token
 
   validates :user_name, :password_digest, :session_token,
@@ -26,7 +40,7 @@ class User < ActiveRecord::Base
     @password = password
     self.password_digest = BCrypt::Password.create(password)
   end
-  
+
   def is_password?(password)
     bc_obj = BCrypt::Password.new(self.password_digest)
     bc_obj.is_password?(password)

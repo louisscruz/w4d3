@@ -1,12 +1,21 @@
 class CatRentalRequest < ActiveRecord::Base
   STATUS_STATES = %w(APPROVED DENIED PENDING)
 
-  belongs_to :cat
+  belongs_to :cat,
+    primary_key: :id,
+    foreign_key: :cat_id,
+    class_name: :Cat
+
+  belongs_to :user,
+    primary_key: :id,
+    foreign_key: :user_id,
+    class_name: :User
 
   after_initialize :assign_pending_status
 
   validates(
     :cat_id,
+    :user_id,
     :end_date,
     :start_date,
     :status,
