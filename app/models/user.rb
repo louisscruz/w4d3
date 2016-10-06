@@ -9,14 +9,18 @@ class User < ActiveRecord::Base
     foreign_key: :user_id,
     class_name: :CatRentalRequest
 
+  has_many :session_tokens,
+    primary_key: :id,
+    foreign_key: :user_id,
+    class_name: :SessionToken
+
   # has_many :rented_cats,
   #   through: :approved_requests,
   #   source: :cat
 
-  after_initialize :ensure_session_token
+  before_create :ensure_session_token
 
-  validates :user_name, :password_digest, :session_token,
-    presence: true, uniqueness: true
+  validates :user_name, :password_digest, presence: true, uniqueness: true
   validates :password, length: { minimum: 6, allow_nil: true }
 
   def self.find_by_credentials(user_name, password)
@@ -27,13 +31,7 @@ class User < ActiveRecord::Base
   attr_reader :password
 
   def ensure_session_token
-    self.session_token ||= generate_session_token
-  end
-
-  def reset_session_token!
-    self.session_token = generate_session_token
-    self.save
-    self.session_token
+    SessionToken.generate_new_token(self.id)
   end
 
   def password=(password)
@@ -45,10 +43,4 @@ class User < ActiveRecord::Base
     bc_obj = BCrypt::Password.new(self.password_digest)
     bc_obj.is_password?(password)
   end
-
-  private
-  def generate_session_token
-    SecureRandom.urlsafe_base64
-  end
-
 end
