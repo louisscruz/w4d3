@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
   #   through: :approved_requests,
   #   source: :cat
 
-  before_create :ensure_session_token
+  after_create :ensure_session_token
 
   validates :user_name, :password_digest, presence: true, uniqueness: true
   validates :password, length: { minimum: 6, allow_nil: true }

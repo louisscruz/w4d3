@@ -11,7 +11,7 @@ class SessionToken < ActiveRecord::Base
     self.create!(user_id: user_id, token: self.generate_session_token)
   end
 
-  def generate_session_token
+  def self.generate_session_token
     SecureRandom.urlsafe_base64
   end
 

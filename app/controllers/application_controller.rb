@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
 
   def login(user)
-    session[:session_token] = SessionToken.find_by(user_id: user.id).order(:updated_at).last
+    session[:session_token] = SessionToken.where(user_id: user.id).order(:updated_at).last.token
   end
 
   def logout(user)
@@ -16,6 +16,6 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user
-    @current_user ||= SessionToken.find_by(token: session[:session_token]).user
+    @current_user ||= User.joins(:session_tokens).where("session_tokens.token = ?", session[:session_token]).last
   end
 end
